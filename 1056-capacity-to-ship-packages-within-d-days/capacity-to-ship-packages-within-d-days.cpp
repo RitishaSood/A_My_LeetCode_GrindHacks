@@ -31,10 +31,10 @@ public:
     // Main function: binary search for minimum capacity
     int shipWithinDays(vector<int>& weights, int days) {
         int n = weights.size();
-        int m = sum(weights);
+        
 
         int low = *max_element(weights.begin(), weights.end());  // at least heaviest package
-        int high = m;                                            // at most total weight
+        int high = 5e4*500 ;                                            // at most total weight
         int ans = 0;
 
         while (low <= high) {
