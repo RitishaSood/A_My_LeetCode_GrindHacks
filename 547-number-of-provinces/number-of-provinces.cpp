@@ -1,46 +1,30 @@
 class Solution {
 public:
-   void bfs(queue<int> &q,vector<int> &vis ,int node,vector<vector<int>> &adj ){
-    q.push(node);
-    vis[node]=1;
-    while(!q.empty()){
-    int Curnode=q.front();
-    q.pop();
-    for(auto it:adj[Curnode]){
-        if(vis[it]!=1){
-            q.push(it);
-            vis[it]=1;
-        }
+
+
+void dfs(vector<int> &vis ,int node,vector<vector<int>>& isConnected,int V ){
+   
+   vis[node]=1;
+   for(int j = 0 ; j < V ; j++ ){
+    if(isConnected[node][j]==1 && vis[j]==0){
+        dfs(vis,j,isConnected,V);
     }
-    
-    }
+   }
 
    }
 
     int findCircleNum(vector<vector<int>>& isConnected) {
-     // Converting the Adj Matrix to Adj List
-     int V= isConnected.size();
-    vector<vector<int>> adj(V);
-    for(int i = 0 ;i<V;i++){
-        for(int j = 0;j<V;j++){
-            if(isConnected[i][j]==1&& i != j){
-                adj[i].push_back(j);
-                adj[j].push_back(i);
-            }
-        }
-        }
+    int V = isConnected.size();
     vector<int> vis(V,0);
-    queue<int> q;
+    
     int count=0;
 
     for(int i = 0 ; i<V;i++){
         if(vis[i]==0){
-            bfs(q,vis,i,adj);
+            dfs(vis,i,isConnected,V);
             count++;
         }
-
     }
-     return count;
-    
+    return count;
     }
 };
