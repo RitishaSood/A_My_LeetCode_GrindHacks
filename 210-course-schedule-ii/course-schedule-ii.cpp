@@ -1,34 +1,43 @@
 class Solution {
 public:
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        vector<vector<int>> adj(numCourses);
-        vector<int> indegree(numCourses, 0);
-        vector<int> order;
-        for (auto& pre : prerequisites) {
-            int course = pre[0], prereq = pre[1];
-            adj[prereq].push_back(course);
-            indegree[course]++;
+    // formation of an adj list to store the order to finish the courses 
+    vector<vector<int>> adj(numCourses);
+    for(int i = 0 ; i<prerequisites.size();i++){
+        int a = prerequisites[i][0];
+        int b = prerequisites[i][1];
+        adj[b].push_back(a);
+    }
+    //calculation of an indegree
+    vector<int> inDegree(numCourses,0);
+    for (int i = 0 ; i<numCourses ; i++){
+    for(auto it: adj[i]){
+        inDegree[it]++;
+    }
+    }
+    //pushing 0 indegree to the queue 
+    queue <int> q;
+    for(int i = 0;i<numCourses;i++){
+        if (inDegree[i]==0){
+            q.push(i);
         }
-queue<int> q;
-// Add all courses with no prerequisites
-        for (int i = 0; i < numCourses; ++i) {
-            if (indegree[i] == 0)
-                q.push(i);
-        }
-// Kahn’s Algorithm 
-        while (!q.empty()) {
-            int node = q.front(); q.pop();
-            order.push_back(node);
-
-            for (int next : adj[node]) {
-                indegree[next]--;
-                if (indegree[next] == 0)
-                    q.push(next);
+    }
+    vector<int> topo;
+    while(!q.empty()){
+        int out = q.front();
+        q.pop();
+        topo.push_back(out);
+        for(auto it : adj[out]){
+            inDegree[it]--;
+            if(inDegree[it]==0){
+                q.push(it);
             }
         }
-// If topological sort includes all courses
-        if (order.size() == numCourses)
-            return order;
-        return {}; 
+    }
+    if(topo.size()==numCourses){
+        return topo;
+    }else{
+        return {};
+    }
     }
 };
