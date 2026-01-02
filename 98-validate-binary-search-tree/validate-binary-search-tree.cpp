@@ -16,8 +16,8 @@ public:
         // Current node must lie in valid range
         if (root->val <= minVal || root->val >= maxVal)
             return false;
-        // Left subtree: max becomes current value
-        // Right subtree: min becomes current value
+        // Left subtree-max becomes current value
+        // Right subtree-min becomes current value
         return isValid(root->left, minVal, root->val) &&
                isValid(root->right, root->val, maxVal);
     }
