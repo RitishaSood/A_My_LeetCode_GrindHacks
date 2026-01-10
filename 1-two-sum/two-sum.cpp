@@ -5,10 +5,7 @@ public:
       int n = nums.size();
       for(int i = 0;i<n;i++){
         int sum = nums[i];
-        for(int j=0;j<n;j++ ){
-            if(i==j){
-                continue;
-            }
+        for(int j=i+1;j<n;j++ ){
             if((sum+=nums[j])==target){
                 return {i,j};
             }else{
