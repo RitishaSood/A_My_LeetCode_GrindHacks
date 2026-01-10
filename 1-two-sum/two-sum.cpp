@@ -1,18 +1,20 @@
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-      // Brute better force O(n2)
+      // Better using maps with Time Complexity O(NlogN) ;
       int n = nums.size();
-      for(int i = 0;i<n;i++){
-        int sum = nums[i];
-        for(int j=i+1;j<n;j++ ){
-            if((sum+=nums[j])==target){
-                return {i,j};
-            }else{
-                sum-=nums[j];//remember to remove !!!!!
-            }
+      map <int , int> arrayElementWithIndex;
+      //map always in the sorted order 
+      for(int i = 0 ; i<n;i++){
+        int currentElement = nums[i];
+        int OtherPair = target - currentElement;
+        if(arrayElementWithIndex.find(OtherPair) != arrayElementWithIndex.end()){
+        return {arrayElementWithIndex[OtherPair],i};
+        }else{
+            arrayElementWithIndex[nums[i]]=i;
         }
-      } 
-      return {-1,-1} ;
+      }
+      return {-1,-1};
+      
     }
 };
