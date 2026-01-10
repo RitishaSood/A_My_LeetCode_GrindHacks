@@ -1,7 +1,7 @@
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-      // Brute force O(n2)
+      // Brute better force O(n2)
       int n = nums.size();
       for(int i = 0;i<n;i++){
         int sum = nums[i];
