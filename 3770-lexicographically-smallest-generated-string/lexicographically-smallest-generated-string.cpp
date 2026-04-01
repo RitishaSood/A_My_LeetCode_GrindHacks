@@ -1,73 +1,61 @@
 class Solution {
+    vector<int> calcZ(const string &s) {
+        int size = s.size();
+        vector<int> z(size, 0);
+        int l = 0, r = 0;   // z-box: [l, r]
+        for (int i = 1; i < size; i++) {
+            if (i <= r)
+                z[i] = min(z[i - l], r - i + 1);
+            while (i + z[i] < size && s[z[i]] == s[i + z[i]]) {
+                l = i;
+                r = i + z[i]++;
+            }
+        }
+        z[0] = size;
+        return z;
+    }
 public:
     string generateString(string str1, string str2) {
-        if(str1 == "TTFFT" && str2 == "fff") return "";
-        if(str1 == "FFFTFTTFTTFTTTTFFTTFFFT" && str2 == "xx") return "";
-        if(str1 == "TTFTTTTTTTTFFF" && str2 == "gg") return "";
+        int size1 = str1.size(), size2 = str2.size();
+        int wordSize = size1 + size2 - 1;
+        string word(wordSize, '*');
+        vector<int> z = calcZ(str2);
 
-        int n = str1.size(), m = str2.size();
-        int len = n + m - 1;
-
-        string word(len, '?');
-
-        // Step 1: Apply T constraints
-        for (int i = 0; i < n; i++) {
-            if (str1[i] == 'T') {
-                for (int j = 0; j < m; j++) {
-                    if (word[i + j] == '?' || word[i + j] == str2[j]) {
-                        word[i + j] = str2[j];
-                    } else {
-                        return "";
-                    }
-                }
+        // process T
+        int pre = -size2;
+        for (int i = 0; i < size1; i++) {
+            if (str1[i] == 'F')
+                continue;
+            int residueLen = max(0, pre + size2 - i);
+            if (residueLen && z[size2 - residueLen] < residueLen)
+                return "";
+            for (int j = residueLen; j < size2; j++) {
+                word[i + j] = str2[j];
             }
+            pre = i;
         }
 
-        // Step 2: Build lexicographically smallest safely
-        for (int i = 0; i < len; i++) {
-            if (word[i] != '?') continue;
-
-            for (char c = 'a'; c <= 'z'; c++) {
-                word[i] = c;
-
-                bool valid = true;
-
-                // Check all windows affected by this position
-                for (int start = max(0, i - m + 1); start <= min(i, n - 1); start++) {
-
-                    // Check T constraint
-                    if (str1[start] == 'T') {
-                        for (int k = 0; k < m; k++) {
-                            if (word[start + k] != '?' && word[start + k] != str2[k]) {
-                                valid = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    // Check F constraint
-                    if (str1[start] == 'F') {
-                        bool match = true;
-                        for (int k = 0; k < m; k++) {
-                            if (word[start + k] == '?' || word[start + k] != str2[k]) {
-                                match = false;
-                                break;
-                            }
-                        }
-                        if (match) {
-                            valid = false;
-                        }
-                    }
-
-                    if (!valid) break;
-                }
-
-                if (valid) break;
+        vector<int> lastWild(wordSize, -1);
+        pre = -1;
+        for (int i = 0; i < wordSize; i++) {
+            if (word[i] == '*') {
+                word[i] = 'a';
+                pre = i;
             }
-
-            if (word[i] == '?') return "";
+            lastWild[i] = pre;
         }
 
+        // process F
+        z = calcZ(str2 + word);
+        for (int i = 0; i < size1; i++) {
+            if (str1[i] == 'T' || z[size2 + i] < size2)
+                continue;
+            int candidatePos = lastWild[i + size2 - 1];
+            if (candidatePos < i)
+                return "";
+            word[candidatePos] = 'b';
+            i = candidatePos;
+        }
         return word;
     }
 };
