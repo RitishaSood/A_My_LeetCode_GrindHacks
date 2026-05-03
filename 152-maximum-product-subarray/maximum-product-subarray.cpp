@@ -8,10 +8,10 @@ public:
             int prod = 1;
             for(int j = i;j<n;j++){ 
                 prod*=nums[j];
-                if(prod == 0) {
-                maxprod = max(prod,maxprod);
-                continue;
-                }
+                // if(prod == 0) {
+                // maxprod = max(prod,maxprod);
+                // continue;
+                // }
                 maxprod = max(prod,maxprod);
             }
             
