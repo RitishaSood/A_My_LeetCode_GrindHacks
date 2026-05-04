@@ -3,7 +3,7 @@ public:
     int numberOfPermutations(int n, vector<vector<int>>& requirements) {
         const int MOD = 1e9 + 7;
 
-        // Map requirements: end -> cnt
+        // Map requirements end -> cnt
         unordered_map<int, int> req;
         for (auto &r : requirements) {
             req[r[0]] = r[1];
@@ -22,14 +22,12 @@ public:
             for (int j = 0; j <= max_inv; j++) {
                 prefix[j + 1] = (prefix[j] + dp[j]) % MOD;
             }
-
             // Transition
             for (int k = 0; k <= max_inv; k++) {
                 int left = max(0, k - (i - 1));
                 int right = k;
                 new_dp[k] = (prefix[right + 1] - prefix[left] + MOD) % MOD;
             }
-
             // Apply constraint if exists at index (i-1)
             if (req.count(i - 1)) {
                 int target = req[i - 1];
