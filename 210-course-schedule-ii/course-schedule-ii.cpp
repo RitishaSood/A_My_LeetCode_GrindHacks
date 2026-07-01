@@ -1,43 +1,48 @@
 class Solution {
-public:
-    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-    // formation of an adj list to store the order to finish the courses 
-    vector<vector<int>> adj(numCourses);
-    for(int i = 0 ; i<prerequisites.size();i++){
-        int a = prerequisites[i][0];
-        int b = prerequisites[i][1];
-        adj[b].push_back(a);
-    }
-    //calculation of an indegree
-    vector<int> inDegree(numCourses,0);
-    for (int i = 0 ; i<numCourses ; i++){
-    for(auto it: adj[i]){
-        inDegree[it]++;
-    }
-    }
-    //pushing 0 indegree to the queue 
-    queue <int> q;
-    for(int i = 0;i<numCourses;i++){
-        if (inDegree[i]==0){
-            q.push(i);
-        }
-    }
-    vector<int> topo;
-    while(!q.empty()){
-        int out = q.front();
-        q.pop();
-        topo.push_back(out);
-        for(auto it : adj[out]){
-            inDegree[it]--;
-            if(inDegree[it]==0){
-                q.push(it);
+private:
+    bool dfs(vector<vector<int>> &adj, vector<int> &vis, int node, vector<int> &ans, stack<int>&st, vector<int> &pathVis){
+        vis[node] = 1;
+        pathVis[node] = 1;
+        for(auto adjnode : adj[node]){
+            if(vis[adjnode] == 0){
+                if(!dfs(adj, vis, adjnode, ans,st,pathVis)){
+                    return false;
+                }
+            }else if(pathVis[adjnode]==1){
+                return false;
             }
         }
+        st.push(node);
+        pathVis[node] = 0;
+        return true;
     }
-    if(topo.size()==numCourses){
-        return topo;
-    }else{
-        return {};
-    }
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        // using dfs to find topo sort
+        vector<int> vis(numCourses,0);
+        vector<int> ans;
+        // make adj lis
+        vector<vector<int>> adj(numCourses);
+        for(auto &it : prerequisites){
+            int u = it[1];
+            int v = it[0];
+            adj[u].push_back(v);
+        }
+        stack<int> st;
+        vector<int> pathVis(numCourses,0);
+        for(int i =0; i<numCourses; i++){
+            if(vis[i]==0){
+                if(!dfs(adj,vis,i,ans,st,pathVis)){
+                    return { };
+                }
+            }
+        }
+        while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
+        }
+
+        return ans;
+
     }
 };
