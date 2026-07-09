@@ -9,8 +9,8 @@ public:
         vector<vector<int>> adj(n);
         vector<int> indegree(n,0);
         for(auto &it : prerequisites){
-            int u = it[0];
-            int v = it[1];
+            int u = it[1];
+            int v = it[0];
             adj[u].push_back(v);
             // adj[v].push_back(u);
             indegree[v]++;
