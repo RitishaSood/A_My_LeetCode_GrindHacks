@@ -30,9 +30,27 @@ public:
         return ans;
     }
     int kthSmallest(TreeNode* root, int k) {
-        vector<int> ino = inorder(root);
-        int n = ino.size();
-        return ino[k-1];
+        // vector<int> ino = inorder(root);
+        // int n = ino.size();
+        // return ino[k-1];
+        //  vector<int> ans;
+        stack<TreeNode*> st;
+        TreeNode* temp = root;
+        int count = 0;
+        while(!st.empty() || temp!=nullptr){
+            TreeNode* curr = temp;
+            while(temp){
+                st.push(temp);
+                temp = temp->left;
+            }
+            temp = st.top();
+            st.pop();
+            count++;
+            if(count == k)return temp->val;
+            // ans.push_back(temp->val);
+            temp = temp->right;
+        }
+        return -1;
         
         
     }
