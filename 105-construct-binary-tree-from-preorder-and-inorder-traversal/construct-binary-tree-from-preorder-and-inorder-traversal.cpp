@@ -12,33 +12,24 @@
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        unordered_map<int, int> inorderIndex;
-        // Store index of each value in inorder traversal
-        for (int i = 0; i < inorder.size(); i++) {
-            inorderIndex[inorder[i]] = i;
+        int n = inorder.size();
+        unordered_map<int,int> mpp;
+        for(int i=0;i<inorder.size();i++){
+            mpp[inorder[i]]=i;
         }
-        int preIndex = 0;
-        return build(preorder, inorder, preIndex, 0, inorder.size() - 1, inorderIndex);
+        TreeNode* root;
+        return buildtree(preorder,0,n-1,inorder,0,n-1,mpp);
     }
 private:
-    TreeNode* build(vector<int>& preorder,
-                    vector<int>& inorder,
-                    int& preIndex,
-                    int inLeft,
-                    int inRight,
-                    unordered_map<int, int>& inorderIndex) {
-        // Base case
-        if (inLeft > inRight) {
+    TreeNode* buildtree(vector<int> &preorder, int prestart, int preend, vector<int> &inorder, int instart, int inend, unordered_map <int,int> &mpp){
+        if(prestart > preend || instart > inend){
             return nullptr;
         }
-        // Current root value from preorder
-        int rootValue = preorder[preIndex++];
-        TreeNode* root = new TreeNode(rootValue);
-        // Split inorder array
-        int mid = inorderIndex[rootValue];
-        // Build left and right subtrees
-        root->left = build(preorder, inorder, preIndex, inLeft, mid - 1, inorderIndex);
-        root->right = build(preorder, inorder, preIndex, mid + 1, inRight, inorderIndex);
+        int isrootidx = mpp[preorder[prestart]];
+        int numleft = isrootidx - instart;
+        TreeNode* root = new TreeNode(preorder[prestart]);
+        root->left = buildtree(preorder,prestart+1,prestart+numleft,inorder,instart,isrootidx-1,mpp);
+        root->right = buildtree(preorder,prestart+numleft+1,preend,inorder,isrootidx+1,inend,mpp);
         return root;
     }
 };
