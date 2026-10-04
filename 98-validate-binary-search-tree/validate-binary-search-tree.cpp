@@ -11,15 +11,10 @@
  */
 class Solution {
 public:
-    bool isValid(TreeNode* root, long minVal, long maxVal) {
-        if (root == nullptr) return true;
-        // Current node must lie in valid range
-        if (root->val <= minVal || root->val >= maxVal)
-            return false;
-        // Left subtree-max becomes current value
-        // Right subtree-min becomes current value
-        return isValid(root->left, minVal, root->val) &&
-               isValid(root->right, root->val, maxVal);
+    bool isValid(TreeNode* root, long long mini, long long maxi){
+        if(root == nullptr)return true;
+        if(root->val <= mini || root->val >= maxi)return false;
+        return isValid(root->left,mini,root->val) && isValid(root->right,root->val,maxi);
     }
     bool isValidBST(TreeNode* root) {
         return isValid(root, LONG_MIN, LONG_MAX);
