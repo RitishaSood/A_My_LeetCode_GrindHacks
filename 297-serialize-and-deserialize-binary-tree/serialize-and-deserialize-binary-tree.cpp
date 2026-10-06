@@ -9,69 +9,73 @@
  */
 class Codec {
 public:
+
     // Encodes a tree to a single string.
     string serialize(TreeNode* root) {
-        if (root == nullptr) {
-            return "";
-        }
-
-        string result;
+        // for serialisation I am planning to go with the level order traversal
+        // how ?
+        if (!root) return "";
+        string s ="";
         queue<TreeNode*> q;
-        q.push(root);
-
-        while (!q.empty()) {
-            TreeNode* node = q.front();
-            q.pop();
-
-            if (node == nullptr) {
-                result += "null,";
-                continue;
+        TreeNode* temp = root;
+        q.push(temp);
+        while(!q.empty()){
+            int n = q.size();
+            for(int i=0;i<n;i++){
+                TreeNode* out = q.front();
+                q.pop();
+                if(out!=nullptr){
+                string data = to_string(out->val)+ ",";
+                s+=data;
+                q.push(out->left);
+                q.push(out->right);
+                }else{
+                s+="#,";
+                }
             }
-            result += to_string(node->val) + ",";
-            q.push(node->left);
-            q.push(node->right);
         }
-
-        return result;
+        return s;
+        
     }
 
     // Decodes your encoded data to tree.
     TreeNode* deserialize(string data) {
-        if (data.empty()) {
-            return nullptr;
-        }
-        vector<string> nodes;
-        string temp;
-        // Split string by comma
-        for (char c : data) {
-            if (c == ',') {
-                nodes.push_back(temp);
-                temp.clear();
-            } else {
-                temp += c;
-            }
-        }
-        TreeNode* root = new TreeNode(stoi(nodes[0]));
+        // in string i, i+1 left, i+2 right;
+        // for this also i will need another traversal
+        if (data.empty()) return nullptr;
+        stringstream s(data);
+        string str;
+        getline(s,str,',');
+        TreeNode* root = new TreeNode(stoi(str));
+        TreeNode* temp = root;
         queue<TreeNode*> q;
-        q.push(root);
-        int index = 1;
-        while (!q.empty() && index < nodes.size()) {
-            TreeNode* current = q.front();
-            q.pop();
-            // Left child
-            if (nodes[index] != "null") {
-                current->left = new TreeNode(stoi(nodes[index]));
-                q.push(current->left);
-            }
-            index++;
-            // Right child
-            if (index < nodes.size() && nodes[index] != "null") {
-                current->right = new TreeNode(stoi(nodes[index]));
-                q.push(current->right);
-            }
-            index++;
+        q.push(temp);
+        while(!q.empty()){
+            int n = q.size();
+            for(int i=0;i<n;i++){
+                TreeNode* out = q.front();
+                q.pop();
+                if(getline(s,str,',')){
+                if(str != "#"){
+                    TreeNode* left_node = new TreeNode(stoi(str));
+                    out->left = left_node;
+                    q.push(left_node);
+                }
+                }
+                if(getline(s,str,',')){
+                if(str != "#"){
+                    TreeNode* right_node = new TreeNode(stoi(str));
+                    out->right = right_node;
+                    q.push(right_node);
+                }
+                }
+
+            
+
         }
-        return root;
+        }
+
+      return root; 
     }
 };
 
