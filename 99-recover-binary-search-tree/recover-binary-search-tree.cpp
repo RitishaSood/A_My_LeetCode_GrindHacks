@@ -10,6 +10,11 @@
  * };
  */
 class Solution {
+private:
+    TreeNode* first;
+    TreeNode* second;
+    TreeNode* prev;
+    TreeNode* middle;
 private :
     void trackinorder(TreeNode* root, vector<int> &ino){
         if(root==nullptr){
@@ -27,14 +32,38 @@ private :
         root->val = ino[idx++];
         recoverinorder(root->right,ino,idx);
     }
+    void pointers(TreeNode* root){
+        if(!root)return;
+        pointers(root->left);
+        if(prev!= nullptr && (prev->val > root->val)){
+            if(first == nullptr){
+                first = prev;
+                middle = root;
+            }else{
+                second = root;
+            }
+        }
+        prev = root;
+        pointers(root->right);
+        
+    }
 public:
     void recoverTree(TreeNode* root) {
        //your code goes here
-       vector<int> ino;
-       int idx = 0;
-       trackinorder(root,ino);
-       sort(ino.begin(),ino.end());
-       recoverinorder(root,ino,idx);
+    //    vector<int> ino;
+    //    int idx = 0;
+    //    trackinorder(root,ino);
+    //    sort(ino.begin(),ino.end());
+    //    recoverinorder(root,ino,idx);
+    //    return;
+
+    first = prev = second= nullptr;
+       pointers(root);
+       if(second){
+        swap(first->val,second->val);
+       }else{
+        swap(first->val, middle->val);
+       }
        return; 
     }
 };
