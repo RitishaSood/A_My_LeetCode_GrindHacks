@@ -1,20 +1,14 @@
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-      // Better using maps with Time Complexity O(NlogN) ;
-      int n = nums.size();
-      map <int , int> arrayElementWithIndex;
-      //map always in the sorted order 
-      for(int i = 0 ; i<n;i++){
-        int currentElement = nums[i];
-        int OtherPair = target - currentElement;
-        if(arrayElementWithIndex.find(OtherPair) != arrayElementWithIndex.end()){
-        return {arrayElementWithIndex[OtherPair],i};
-        }else{
-            arrayElementWithIndex[nums[i]]=i;
+    vector<int> twoSum(vector<int> &nums, int target) {
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = i + 1; j < nums.size(); j++) {
+                if (nums[j] == target - nums[i]) {
+                    return {i, j};
+                }
+            }
         }
-      }
-      return {-1,-1};
-      
+        // Return an empty vector if no solution is found
+        return {};
     }
 };
